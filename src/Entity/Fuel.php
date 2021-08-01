@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
- * @ApiResource()
+ * @ApiResource(itemOperations={"get"})
  * @ORM\Entity(repositoryClass=FuelRepository::class)
  */
 class Fuel

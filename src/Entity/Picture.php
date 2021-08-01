@@ -7,7 +7,7 @@ use App\Repository\PictureRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(itemOperations={"get","put","delete"},collectionOperations={"get","post"})
  * @ORM\Entity(repositoryClass=PictureRepository::class)
  */
 class Picture

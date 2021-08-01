@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
- * @ApiResource()
+ * @ApiResource(itemOperations={"get","put","delete"},collectionOperations={"get","post"})
  * @ORM\Entity(repositoryClass=CarcategoryRepository::class)
  */
 class Carcategory

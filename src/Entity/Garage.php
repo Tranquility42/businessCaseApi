@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(itemOperations={"get","put","delete"},collectionOperations={"get","post"})
  * @ORM\Entity(repositoryClass=GarageRepository::class)
  */
 class Garage

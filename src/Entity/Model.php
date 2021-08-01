@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(itemOperations={"get","put","delete"},collectionOperations={"get","post"})
  * @ApiFilter(SearchFilter::class, properties={"name"="Renault", "brand.name"="Renault" })
  * @ORM\Entity(repositoryClass=ModelRepository::class)
  */
