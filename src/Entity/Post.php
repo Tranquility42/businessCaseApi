@@ -2,21 +2,25 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 
 /**
  * @ApiResource(
  *     normalizationContext={"groupe"={"read:post_infos"}},
- *     denormalizationContext={"groupe"={"write:post_infos"}},
- *     itemOperations={"get"={"normalization_context"={"groups"={"read:post_infos"}}},
- *     "delete",
- *     "put"}
-
+ *     denormalizationContext={"groupe"={"write:post_infos"},"groupe"={"update:post_infos"}},
+ *     collectionOperations={"get","post"={"validation_groups"={"write:post_infos"},{"update:post_infos"}}},
+ *     itemOperations={
+ *          "get"={"normalization_context"={"groups"={"read:post_infos"}}},
+ *          "delete",
+ *          "put"}
  * )
  * @ORM\Entity(repositoryClass=PostRepository::class)
  */
@@ -25,17 +29,25 @@ class Post
 {
     /**
      * @ORM\Id
+     * @Groups("read:post_infos")
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
+     * @ApiFilter(RangeFilter::class, properties={"price"})
+     * @Assert\Length(min=3)
+     * @Groups("update:post_infos")
+     * @Groups("read:post_infos")
+     * @Groups("write:post_infos")
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $price;
 
     /**
+     * @Assert\Length(min=25)
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\Column(type="string", length=255)
@@ -43,7 +55,8 @@ class Post
     private $description;
 
     /**
-     *
+     * @Assert\Length(min=4)
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\Column(type="integer")
@@ -51,6 +64,7 @@ class Post
     private $year;
 
     /**
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\Column(type="boolean")
@@ -58,6 +72,7 @@ class Post
     private $ismanual;
 
     /**
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\Column(type="string", length=255)
@@ -66,12 +81,12 @@ class Post
 
     /**
      * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\Column(type="date")
      */
     private $datepost;
 
     /**
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\Column(type="integer")
@@ -79,11 +94,13 @@ class Post
     private $mileage;
 
     /**
+     * @Groups("read:post_infos")
      * @ORM\ManyToOne(targetEntity=Garage::class, inversedBy="Garages")
      */
     private $garage;
 
     /**
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="models")
@@ -91,6 +108,7 @@ class Post
     private $model;
 
     /**
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="pictures")
@@ -98,6 +116,7 @@ class Post
     private $pictures;
 
     /**
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\ManyToOne(targetEntity=Fuel::class, inversedBy="fuels")
@@ -105,6 +124,7 @@ class Post
     private $fuel;
 
     /**
+     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
      * @ORM\ManyToOne(targetEntity=Carcategory::class, inversedBy="carcategories")
