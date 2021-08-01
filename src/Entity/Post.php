@@ -15,8 +15,8 @@ use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groupe"={"read:post_infos"}},
- *     denormalizationContext={"groupe"={"write:post_infos"},"groupe"={"update:post_infos"}},
+ *     normalizationContext={"groups"={"read:post_infos"}},
+ *     denormalizationContext={"groups"={"write:post_infos"},"groups"={"update:post_infos"}},
  *     collectionOperations={"get","post"={"validation_groups"={"write:post_infos"},{"update:post_infos"}}},
  *     itemOperations={
  *          "get"={"normalization_context"={"groups"={"read:post_infos"}}},
