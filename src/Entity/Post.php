@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
 
 /**
  * @ApiResource(
@@ -55,6 +56,7 @@ class Post
     private $description;
 
     /**
+     * @ApiFilter(RangeFilter::class, properties={"year"})
      * @Assert\Length(min=4)
      * @Groups("update:post_infos")
      * @Groups("read:post_infos")
@@ -80,12 +82,14 @@ class Post
     private $reference;
 
     /**
+     * @ApiFilter (OrderFilter::class , properties={"datepost"="DESC"})
      * @Groups("read:post_infos")
      * @ORM\Column(type="date")
      */
     private $datepost;
 
     /**
+
      * @Groups("update:post_infos")
      * @Groups("read:post_infos")
      * @Groups("write:post_infos")
