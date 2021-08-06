@@ -5,9 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PictureRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(itemOperations={"get","put","delete"},collectionOperations={"get","post"})
+
  * @ORM\Entity(repositoryClass=PictureRepository::class)
  */
 class Picture
@@ -20,11 +21,13 @@ class Picture
     private $id;
 
     /**
+    * @Groups("read:post_infos")
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
+     *
      * @ORM\Column(type="decimal", precision=10, scale=0)
      */
     private $weight;

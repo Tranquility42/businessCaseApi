@@ -10,10 +10,9 @@ use App\Repository\ModelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(itemOperations={"get","put","delete"},collectionOperations={"get","post"})
- * @ApiFilter(SearchFilter::class, properties={"name"="Renault", "brand.name"="Renault" })
  * @ORM\Entity(repositoryClass=ModelRepository::class)
  */
 class Model
@@ -26,16 +25,19 @@ class Model
     private $id;
 
     /**
+     * @Groups("read:post_infos")
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
+     *
      * @ORM\OneToMany(targetEntity=post::class, mappedBy="model")
      */
     private $models;
 
     /**
+     * @Groups("read:post_infos")
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="brands")
      * @ORM\JoinColumn(nullable=false)
      */

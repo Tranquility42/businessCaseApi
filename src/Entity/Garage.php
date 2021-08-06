@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource(itemOperations={"get","put","delete"},collectionOperations={"get","post"})
  * @ORM\Entity(repositoryClass=GarageRepository::class)
  */
 class Garage
@@ -36,11 +35,6 @@ class Garage
      */
     private $address;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Professional::class, inversedBy="professionals")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $professional;
 
     public function __construct()
     {
@@ -116,15 +110,4 @@ class Garage
         return $this;
     }
 
-    public function getProfessional(): ?Professional
-    {
-        return $this->professional;
-    }
-
-    public function setProfessional(?Professional $professional): self
-    {
-        $this->professional = $professional;
-
-        return $this;
-    }
 }

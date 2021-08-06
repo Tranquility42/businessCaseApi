@@ -2,19 +2,15 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProfessionalRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ApiResource(itemOperations={"get","put","delete"},collectionOperations={"get","post"})
  * @ORM\Entity(repositoryClass=ProfessionalRepository::class)
  */
-class Professional
+class Professional implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
@@ -24,89 +20,133 @@ class Professional
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=180, unique=true)
      */
-    private $name;
+    private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="json")
      */
-    private $firstname;
+    private $roles = [];
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $numsiret;
+    private $siret;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $mail;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $phone;
 
     /**
-     * @ORM\OneToMany(targetEntity=garage::class, mappedBy="professional", orphanRemoval=true)
+     * @ORM\Column(type="string", length=255)
      */
-    private $professionals;
-
-    public function __construct()
-    {
-        $this->professionals = new ArrayCollection();
-    }
+    private $username;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getEmail(): ?string
     {
-        return $this->name;
+        return $this->email;
     }
 
-    public function setName(string $name): self
+    public function setEmail(string $email): self
     {
-        $this->name = $name;
+        $this->email = $email;
 
         return $this;
     }
 
-    public function getFirstname(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
     {
-        return $this->firstname;
+        return (string) $this->email;
     }
 
-    public function setFirstname(string $firstname): self
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
+    public function getUsername(): string
     {
-        $this->firstname = $firstname;
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function getNumsiret(): ?int
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
-        return $this->numsiret;
+        return $this->password;
     }
 
-    public function setNumsiret(int $numsiret): self
+    public function setPassword(string $password): self
     {
-        $this->numsiret = $numsiret;
+        $this->password = $password;
 
         return $this;
     }
 
-    public function getMail(): ?string
+    /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
     {
-        return $this->mail;
+        return null;
     }
 
-    public function setMail(string $mail): self
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
     {
-        $this->mail = $mail;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function getSiret(): ?int
+    {
+        return $this->siret;
+    }
+
+    public function setSiret(int $siret): self
+    {
+        $this->siret = $siret;
 
         return $this;
     }
@@ -116,39 +156,16 @@ class Professional
         return $this->phone;
     }
 
-    public function setPhone(string $phone): self
+    public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
 
         return $this;
     }
 
-    /**
-     * @return Collection|garage[]
-     */
-    public function getProfessionals(): Collection
+    public function setUsername(string $username): self
     {
-        return $this->professionals;
-    }
-
-    public function addProfessional(garage $professional): self
-    {
-        if (!$this->professionals->contains($professional)) {
-            $this->professionals[] = $professional;
-            $professional->setProfessional($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProfessional(garage $professional): self
-    {
-        if ($this->professionals->removeElement($professional)) {
-            // set the owning side to null (unless already changed)
-            if ($professional->getProfessional() === $this) {
-                $professional->setProfessional(null);
-            }
-        }
+        $this->username = $username;
 
         return $this;
     }

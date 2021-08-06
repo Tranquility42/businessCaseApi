@@ -12,17 +12,23 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
+use App\Controller\PostCountController;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+
 
 /**
  * @ApiResource(
  *     normalizationContext={"groups"={"read:post_infos"}},
- *     denormalizationContext={"groups"={"write:post_infos"},"groups"={"update:post_infos"}},
- *     collectionOperations={"get","post"={"validation_groups"={"write:post_infos"},{"update:post_infos"}}},
- *     itemOperations={
- *          "get"={"normalization_context"={"groups"={"read:post_infos"}}},
- *          "delete",
- *          "put"}
- * )
+ *     itemOperations={"get"={"normalization_context"={"groups"={"read:post_infos"}}}})
+ *
+ * @ApiFilter(SearchFilter::class,
+ *     properties={
+ *     "model.brand.name"="Renault",
+ *      "model.name"="Laguna III"})
+ *
+ * @apiFilter(RangeFilter::class, properties={"price", "year"})
+ * @apiFilter(OrderFilter::class, properties={"datepost"={"ASC"}})
  * @ORM\Entity(repositoryClass=PostRepository::class)
  */
 
@@ -30,107 +36,76 @@ class Post
 {
     /**
      * @ORM\Id
-     * @Groups("read:post_infos")
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ApiFilter(RangeFilter::class, properties={"price"})
-     * @Assert\Length(min=3)
-     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $price;
 
     /**
-     * @Assert\Length(min=25)
-     * @Groups("update:post_infos")
-     * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\Column(type="string", length=255)
      */
     private $description;
 
     /**
-     * @ApiFilter(RangeFilter::class, properties={"year"})
-     * @Assert\Length(min=4)
-     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\Column(type="integer")
      */
     private $year;
 
     /**
-     * @Groups("update:post_infos")
+     * @ApiFilter(BooleanFilter::class, properties={"year"})
      * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\Column(type="boolean")
      */
     private $ismanual;
 
     /**
-     * @Groups("update:post_infos")
-     * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\Column(type="string", length=255)
      */
     private $reference;
 
     /**
-     * @ApiFilter (OrderFilter::class , properties={"datepost"="DESC"})
      * @Groups("read:post_infos")
      * @ORM\Column(type="date")
      */
     private $datepost;
 
     /**
-
-     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\Column(type="integer")
      */
     private $mileage;
 
     /**
-     * @Groups("read:post_infos")
      * @ORM\ManyToOne(targetEntity=Garage::class, inversedBy="Garages")
      */
-    private $garage;
+    public $garage;
 
     /**
-     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="models")
      */
     private $model;
 
     /**
-     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="pictures")
      */
     private $pictures;
 
     /**
-     * @Groups("update:post_infos")
      * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\ManyToOne(targetEntity=Fuel::class, inversedBy="fuels")
      */
     private $fuel;
 
     /**
-     * @Groups("update:post_infos")
-     * @Groups("read:post_infos")
-     * @Groups("write:post_infos")
      * @ORM\ManyToOne(targetEntity=Carcategory::class, inversedBy="carcategories")
      */
     private $carcategory;
