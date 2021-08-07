@@ -9,6 +9,16 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ApiResource(
+ *     collectionOperations={
+ *          "post"={"security"="is_granted('ROLE_USER')"},
+ *          "get"={"security"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *    itemOperations={
+ *     "get"={"normalization_context"={"groups"={"read:post_infos"}}},
+ *     "patch"={"security"="is_granted('ROLE_ADMIN') or object.garage.professional == user"},
+ *     "delete"={"security"="is_granted('ROLE_ADMIN') or object.garage.professional == user"}
+ * })
  * @ORM\Entity(repositoryClass=GarageRepository::class)
  */
 class Garage

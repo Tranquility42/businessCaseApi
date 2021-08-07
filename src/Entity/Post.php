@@ -17,10 +17,21 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 
+
+
 /**
  * @ApiResource(
+ *     collectionOperations={
+ *     "get",
+ *     "post"={"normalization_context"={"groups"={"write:post_infos"}} ,
+ *             "security"="is_granted('ROLE_USER')", }},
+ *
  *     normalizationContext={"groups"={"read:post_infos"}},
- *     itemOperations={"get"={"normalization_context"={"groups"={"read:post_infos"}}}})
+ *     itemOperations={
+ *     "get"={"normalization_context"={"groups"={"read:post_infos"}}},
+ *     "patch"={"security"="is_granted('ROLE_ADMIN') or object.garage.professional == user"},
+ *     "delete"={"security"="is_granted('ROLE_ADMIN') or object.garage.professional == user"},
+ *     })
  *
  * @ApiFilter(SearchFilter::class,
  *     properties={
@@ -42,25 +53,31 @@ class Post
     private $id;
 
     /**
-     * @Groups("read:post_infos")
+     * @Assert\NotBlank(message="Le champ ne peux pas avoir que des caractère vide")
+     * @Assert\NotNull(message="Vous devez au moin rentrer une valeur")
+     * @Groups("read:post_infos , write:post_infos")
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\GreaterThan(50)
      */
     private $description;
 
     /**
-     * @Groups("read:post_infos")
+     * @Assert\NotBlank(message="Le champ ne peux pas avoir que des caractère vide")
+     * @Assert\NotNull(message="Vous devez au moin rentrer une valeur")
+     * @Groups("read:post_infos , write:post_infos")
      * @ORM\Column(type="integer")
      */
     private $year;
 
     /**
+     *
      * @ApiFilter(BooleanFilter::class, properties={"year"})
-     * @Groups("read:post_infos")
+     * @Groups("read:post_infos , write:post_infos")
      * @ORM\Column(type="boolean")
      */
     private $ismanual;
@@ -71,13 +88,15 @@ class Post
     private $reference;
 
     /**
-     * @Groups("read:post_infos")
+     * @Groups("read:post_infos , write:post_infos")
      * @ORM\Column(type="date")
      */
     private $datepost;
 
     /**
-     * @Groups("read:post_infos")
+     * @Assert\NotBlank(message="Le champ ne peux pas avoir que des caractère vide")
+     * @Assert\NotNull(message="Vous devez au moin rentrer une valeur")
+     * @Groups("read:post_infos , write:post_infos")
      * @ORM\Column(type="integer")
      */
     private $mileage;
@@ -88,19 +107,24 @@ class Post
     public $garage;
 
     /**
-     * @Groups("read:post_infos")
+     * @Assert\NotBlank(message="Le champ ne peux pas avoir que des caractère vide")
+     * @Assert\NotNull(message="Vous devez au moin rentrer une valeur")
+     * @Groups("read:post_infos , write:post_infos")
      * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="models")
      */
     private $model;
 
     /**
-     * @Groups("read:post_infos")
+     *
+     * @Groups("read:post_infos , write:post_infos")
      * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="pictures")
      */
     private $pictures;
 
     /**
-     * @Groups("read:post_infos")
+     * @Assert\NotBlank(message="Le champ ne peux pas avoir que des caractère vide")
+     * @Assert\NotNull(message="Vous devez au moin rentrer une valeur")
+     * @Groups("read:post_infos , write:post_infos")
      * @ORM\ManyToOne(targetEntity=Fuel::class, inversedBy="fuels")
      */
     private $fuel;
